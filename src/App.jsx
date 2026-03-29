@@ -250,7 +250,7 @@ const GLOSSARY = STUDY_NOTES.flatMap(s => s.concepts).reduce((acc, c) => {
 }, []).sort((a, b) => a.term.localeCompare(b.term));
 
 function App() {
-  const [expandedSession, setExpandedSession] = useState(0);
+  const [expandedSession, setExpandedSession] = useState(null);
   const [activeTab, setActiveTab] = useState("sessions");
   const [searchTerm, setSearchTerm] = useState("");
 
