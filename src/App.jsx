@@ -383,7 +383,7 @@ function App() {
             style={{
               width: "100%", padding: "10px 14px", marginBottom: 16,
               border: "2px solid #e2e8f0", borderRadius: 10, fontSize: 14,
-              color: "#0f172a", outline: "none", boxSizing: "border-box",
+              color: "#ffffff", outline: "none", boxSizing: "border-box",
               fontFamily: "'DM Sans', sans-serif"
             }}
           />
