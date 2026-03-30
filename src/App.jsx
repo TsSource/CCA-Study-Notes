@@ -241,6 +241,51 @@ const STUDY_NOTES = [
       "All five ‘additional topics’ from the course (agent orchestration, agent evaluation, agentic RAG, RAG evaluation, tool evaluation) are covered in the CCA study plan Weeks 2–6."
     ],
     selfAssessment: "Agent mental model fully locked in. Tool use vs agent distinction clear — architecture defines the agent. The while True + stop_reason code pattern understood. Environment inspection via screenshots understood. Reliability-economy tradeoff understood. Building with Claude API course COMPLETED with 100% final assessment. Ready for GitHub/Vercel deployment and domain-by-domain CCA study plan."
+  },
+  {
+    session: 8,
+    date: "March 29, 2026",
+    title: "Domain 1 Deep Dive — Patterns, Multi-Agent Architecture & Error Handling",
+    duration: "~3 hrs",
+    weekRef: "Week 2 — Domain 1 (27%)",
+    keyTakeaways: [
+      "Practice exam baseline: 805/1000 (78%), passing but with low confidence — answers selected by elimination, not understanding.",
+      "Pattern recognition framework: (1) Different inputs → different handlers = routing. (2) Steps depend on each other = chaining. (3) Tasks are independent = parallelization.",
+      "Agents when Claude needs to make decisions along the way. Workflows when the steps are known in advance.",
+      "Orchestrator = one boss stays in charge, collects and synthesizes results. Delegator = no boss, agents hand off entire conversation.",
+      "Subagents NEVER communicate directly in an orchestrator pattern — everything flows through the orchestrator (centralized communication).",
+      "Agent SDK provides four components: Agents (job descriptions), Handoffs (delegator pattern), Guardrails (safety checks), Tracing (flight recorder).",
+      "Three error types: tool failure (code retries, Claude adapts), agent off track (max iterations, timeout), human-in-the-loop (approval gate for risky actions)."
+    ],
+    concepts: [
+      { term: "Pattern Recognition Framework", explanation: "Three questions to identify the right pattern: (1) Does input need different handling? → Routing. (2) Do steps depend on each other? → Chaining. (3) Are tasks independent? → Parallelization. Then ask: does Claude need autonomy? If yes → agent. If predictable → workflow.", examRelevance: "Domain 1 (27%) — this framework is the foundation for answering every architecture question on the exam." },
+      { term: "Routing Pattern (Exam Application)", explanation: "Classifier reads input, categorizes it, sends to the right specialist. Each specialist may have different tools. The classifier itself is typically a workflow (one decision, predictable). Example: customer emails classified as billing, technical, or general.", examRelevance: "Domain 1 — look for keywords like 'different types,' 'depending on category,' or 'various kinds of input.'" },
+      { term: "Chaining Pattern (Exam Application)", explanation: "Output of step 1 feeds into step 2 sequentially. Each step must complete before the next starts. Example: extract terms → check compliance → generate report. All steps can be workflows if predictable.", examRelevance: "Domain 1 — look for 'first extract, then analyze,' 'based on the results of,' or sequential dependencies." },
+      { term: "Parallelization Pattern (Exam Application)", explanation: "Multiple tasks run simultaneously from the same input. No dependencies between tasks. Example: generate ad copy, email subjects, and blog outline from the same product brief. All can be workflows.", examRelevance: "Domain 1 — look for 'simultaneously,' 'at the same time,' or independent tasks from same source." },
+      { term: "Combined Patterns", explanation: "Real systems use multiple patterns together. Example: research agent (chain step 1) → three parallel content workflows (step 2). Or: three parallel tasks → chain to a final summary. The architect identifies the right pattern for each piece.", examRelevance: "Domain 1 — the exam loves combined patterns. Practice decomposing scenarios into their component patterns." },
+      { term: "Orchestrator Multi-Agent Pattern", explanation: "One central agent stays in charge throughout. Breaks the goal into subtasks, assigns to specialist agents, collects results, synthesizes final output. Specialists only talk to the orchestrator, never to each other. Like a film director coordinating camera, actors, and sound.", examRelevance: "Domain 1 — use when results need to be combined, compared, or synthesized. The synthesis step requires a central coordinator." },
+      { term: "Delegator (Handoff) Multi-Agent Pattern", explanation: "No central coordinator. One agent recognizes it's not the right fit and hands off the entire conversation to another specialist. The new agent takes full ownership. Like a hospital triage nurse handing you off to a cardiologist.", examRelevance: "Domain 1 — use when conversation moves between topics and only one specialist is needed at a time. No combining of results." },
+      { term: "Centralized Communication Principle", explanation: "In an orchestrator pattern, subagents NEVER communicate directly with each other. All information flows through the orchestrator. Without this: orchestrator loses control, behavior becomes unpredictable, debugging becomes impossible.", examRelevance: "Domain 1 — the exam presents scenarios where subagents bypass the coordinator. The answer is always: this violates centralized communication." },
+      { term: "Agent SDK: Agents Component", explanation: "A configured Claude instance with a defined system prompt, tools, and model. Like writing a job description — 'You are a billing specialist with access to payment tools, using Sonnet.'", examRelevance: "Domain 1 — understanding how agents are defined and configured in the SDK." },
+      { term: "Agent SDK: Handoffs Component", explanation: "Built-in implementation of the delegator pattern. Define rules like 'if customer asks about claims, hand off to claims agent.' The SDK handles conversation transfer mechanics.", examRelevance: "Domain 1 — the SDK's handoff mechanism is the production implementation of the delegator pattern." },
+      { term: "Agent SDK: Guardrails Component", explanation: "Safety checks that run alongside agents. Input guardrails check user messages before the agent sees them (prompt injection, unsupported languages). Output guardrails check responses before they reach the user (sensitive data, unauthorized actions).", examRelevance: "Domain 1 & 5 — guardrails are how architects build trust and safety. The exam tests what safeguards to add." },
+      { term: "Agent SDK: Tracing Component", explanation: "Built-in logging that records every decision, tool call, handoff, and guardrail check during execution. Like a flight recorder on an airplane — essential for debugging when things go wrong.", examRelevance: "Domain 1 & 5 — tracing connects to monitoring and observability. You can't debug what you can't see." },
+      { term: "SDK vs Custom Agent Loop", explanation: "Use the SDK when you need multiple agents, handoffs, guardrails, and tracing. Build your own loop when you have a single agent with a straightforward task. Principle: choose the simplest tool that meets requirements.", examRelevance: "Domain 1 — the exam tests whether you can choose the right level of tooling complexity." },
+      { term: "Tool Failure Handling", explanation: "The tool itself fails (API down, timeout). Your code handles retries: simple retry, retry with backoff (increasing wait times), fallback to alternative tool. If all retries fail, tell Claude via is_error so it can adapt.", examRelevance: "Domain 1 & 2 — code handles retries, Claude handles adaptation. The exam tests this separation." },
+      { term: "Agent Going Off Track", explanation: "Claude is running fine but making bad decisions. Safeguards: max iterations (hard cap on loop count), timeout (total elapsed time limit), output validation (check final answer before returning). Built into your code, not left to Claude.", examRelevance: "Domain 1 & 5 — these are reliability safeguards the architect must design into the system." },
+      { term: "Human-in-the-Loop", explanation: "High-risk actions require human approval before execution. The check sits between Claude's tool request and code execution. Agent recommends, human approves. Required for: financial actions above threshold, irreversible actions, high-stakes decisions.", examRelevance: "Domain 1 & 5 — the exam tests when human-in-the-loop is necessary and where the approval gate sits in the code." },
+      { term: "Max Iterations Pattern", explanation: "A loop_count variable inside the agent loop that increments with each trip around. When it hits the max (e.g., 7), the loop breaks. Prevents infinite loops and runaway API costs. Claude can still stop naturally with end_turn before hitting the limit.", examRelevance: "Domain 1 — understanding the code pattern for limiting agent loops is directly tested." }
+    ],
+    examInsights: [
+      "Pattern recognition is the #1 skill for Domain 1. When you see a scenario, run the three questions: routing? chaining? parallelization? Then decide agent vs workflow for each piece.",
+      "Default to workflows. Use agents only where flexibility is genuinely needed. The exam penalizes over-engineering with agents when workflows would suffice.",
+      "Orchestrator vs delegator: if the task ends with 'put it all together' → orchestrator. If the task ends with 'pass it along' → delegator.",
+      "Centralized communication is a directly tested concept. Subagents talking directly to each other is always wrong in an orchestrator pattern.",
+      "The Agent SDK is for multi-agent production systems. A single agent with a simple loop doesn't need the SDK — that's over-engineering.",
+      "Error handling has three layers: tool failure (code retries), agent off track (max iterations/timeout), human-in-the-loop (approval gate). Know where each sits in the code.",
+      "Passing by elimination is not mastery. The exam will present answer choices designed to trap confident-sounding but wrong reasoning. Deep understanding prevents these traps."
+    ],
+    selfAssessment: "Pattern recognition framework internalized through multiple practice scenarios. Correctly identified routing, chaining, parallelization, and combined patterns with appropriate agent/workflow assignments. Orchestrator vs delegator clear with correct reasoning. Centralized communication understood. Agent SDK four components understood with use-case criteria. Three error handling types understood with code placement. Confidence significantly improved from start of session. Next: Exam Guide Domain 1 review, practice questions, then Customer Support Triage Agent project."
   }
 ];
 
@@ -383,7 +428,7 @@ function App() {
             style={{
               width: "100%", padding: "10px 14px", marginBottom: 16,
               border: "2px solid #e2e8f0", borderRadius: 10, fontSize: 14,
-              color: "#ffffff", outline: "none", boxSizing: "border-box",
+              color: "#0f172a", outline: "none", boxSizing: "border-box",
               fontFamily: "'DM Sans', sans-serif"
             }}
           />
