@@ -286,6 +286,46 @@ const STUDY_NOTES = [
       "Passing by elimination is not mastery. The exam will present answer choices designed to trap confident-sounding but wrong reasoning. Deep understanding prevents these traps."
     ],
     selfAssessment: "Pattern recognition framework internalized through multiple practice scenarios. Correctly identified routing, chaining, parallelization, and combined patterns with appropriate agent/workflow assignments. Orchestrator vs delegator clear with correct reasoning. Centralized communication understood. Agent SDK four components understood with use-case criteria. Three error handling types understood with code placement. Confidence significantly improved from start of session. Next: Exam Guide Domain 1 review, practice questions, then Customer Support Triage Agent project."
+  },
+  {
+    session: 9,
+    date: "March 30, 2026",
+    title: "Domain 1 Exam Review, Practice Questions & Gap Remediation",
+    duration: "~2.5 hrs",
+    weekRef: "Week 2 — Domain 1 (27%)",
+    keyTakeaways: [
+      "Worked through 5 exam-style scenarios applying pattern recognition framework before practice questions.",
+      "Practice questions: improved from 69% (11/16) to 100% (16/16) on second attempt.",
+      "fork_session creates independent branches from a shared analysis baseline — the mechanism implementing orchestrator pattern in Claude Code.",
+      "Subagents NEVER automatically share context. The coordinator must explicitly pass information between them.",
+      "Hub-and-spoke applies to ALL communication: tasks, results, context, and errors all flow through coordinator.",
+      "Tool block data shapes mastered: tool_use (Claude's request), tool_result (success/error response), is_error flag.",
+      "Human-in-the-loop code gate sits between Claude's tool request and code execution. Claude never knows the gate exists.",
+      "Programmatic gates are walls Claude cannot bypass. System prompt instructions are suggestions Claude can ignore."
+    ],
+    concepts: [
+      { term: "fork_session", explanation: "Creates independent branches from a shared context baseline in Claude Code. Takes a snapshot of everything the agent has analyzed so far and creates copies for parallel exploration. Each branch works independently and reports back to the parent. The mechanism that implements the orchestrator pattern.", examRelevance: "Domain 1 & 3 — fork_session is the Claude Code implementation of the orchestrator pattern. Branches don't cross-communicate." },
+      { term: "Context Sharing Rule", explanation: "Subagents do NOT automatically share context with each other. If subagent A produces results that subagent B needs, the coordinator must explicitly take A's output and include it in B's prompt. Never use shared memory objects — that bypasses the coordinator.", examRelevance: "Domain 1 — any answer involving subagents sharing anything directly (shared memory, concurrent state) is WRONG." },
+      { term: "Hub-and-Spoke Principle", explanation: "In orchestrator patterns, ALL communication flows through the hub (coordinator). The spokes (subagents) never connect directly. Applies to task assignments, results, context passing, and error reporting. Violation signs: subagents calling each other's tools or sharing memory.", examRelevance: "Domain 1 — hub-and-spoke violation is a common wrong answer on the exam." },
+      { term: "Tool Use Block (Data Shape)", explanation: "Claude's request to call a tool. Four pieces: type ('tool_use'), id (unique tracking number), name (which tool), input (parameters). The stop_reason will be 'tool_use' when this block appears.", examRelevance: "Domain 1 & 2 — recognize this data shape when reading agent loop code." },
+      { term: "Tool Result Block (Data Shape)", explanation: "The result sent back to Claude after tool execution. Contains: type ('tool_result'), tool_use_id (must match original request's id), content (the result or error message). Optionally includes is_error: true for failures.", examRelevance: "Domain 1 & 2 — the tool_use_id matching is critical for parallel tool calls." },
+      { term: "Complete Tool Cycle", explanation: "Claude requests tool → code checks for gates (human-in-the-loop) → code executes function → code packages result into tool_result with matching ID → code appends to conversation history → sends back to Claude → Claude reads and continues or stops.", examRelevance: "Domain 1 — every agent system follows this exact cycle." },
+      { term: "Human-in-the-Loop Code Gate", explanation: "A programmatic check between Claude's tool request and code execution. If the action is high-risk (refund > $500, delete data), code pauses and asks a human. If approved, function executes. If denied, a tool_result telling Claude it was denied is sent back. The function NEVER executes without approval.", examRelevance: "Domain 1 & 5 — know the gate placement: after request, before execution." },
+      { term: "Programmatic vs Prompt Guarantees", explanation: "System prompt instructions are suggestions Claude CAN ignore in edge cases. Code-level gates are walls Claude CANNOT bypass. For guaranteed behavior (identity verification before financial ops), always use programmatic prerequisites, not prompt instructions.", examRelevance: "Domain 1 & 5 — 'add it to the system prompt' is almost always the wrong answer for guaranteed behavior." },
+      { term: "Routing vs Delegator Decision", explanation: "Routing: one-time classification at the start, fixed path for rest of conversation. Delegator: classification with ability to re-route when topics change mid-conversation. Key question: can the topic change? If yes → delegator.", examRelevance: "Domain 1 — the exam tests this distinction with chatbot scenarios." },
+      { term: "Input Complexity Drives Architecture", explanation: "When input is highly variable and unpredictable (80-page contracts with varying formats), even simple-sounding tasks may require agent-level autonomy. The complexity of the INPUT drives the decision, not just the task description.", examRelevance: "Domain 1 — don't assume a task is simple just because the description sounds simple. Check the input variability." },
+      { term: "Simplest Architecture Principle", explanation: "The exam rewards the simplest architecture that meets all requirements. Don't escalate to agents when workflows work. Don't use orchestrator when parallelization suffices. Over-engineering is penalized.", examRelevance: "Domain 1 — if two answers both work, the simpler one is correct." },
+      { term: "Architect's Role in Code", explanation: "The architect designs rules ('refund > $500 needs approval') and directs Claude Code to implement them. Reviews the output code to verify: Is the gate in the right place? Does the denial path send proper tool_result? Does the threshold match? The building inspector, not the carpenter.", examRelevance: "All domains — the CCA tests design decisions and code reading, not code writing." }
+    ],
+    examInsights: [
+      "Sequential dependencies + sensitive final action = chaining + human-in-the-loop. This pattern appears frequently.",
+      "Parallelization becomes orchestrator only when subtasks require agent-level autonomy. If tasks are straightforward generation, stay with parallelization.",
+      "fork_session is the mechanism, orchestrator is the concept. Know both and how they connect.",
+      "Any exam answer involving subagents sharing state directly (shared memory, concurrent access) is wrong. Everything flows through the coordinator.",
+      "stop_reason: tool_use = continue (Claude needs something). end_turn = stop (Claude is done). Don't confuse them under pressure.",
+      "The exam tests code reading, not code writing. Recognize where gates sit, what tool blocks contain, and how the agent loop flows."
+    ],
+    selfAssessment: "Domain 1 practice questions improved from 69% to 100%. Key gaps filled: fork_session mechanics, context sharing rules, hub-and-spoke applied to data flow. Tool block data shapes understood. Human-in-the-loop code pattern mastered with correct gate placement. Routing vs delegator distinction clear. Code reading fluency improving. Ready for Domain 1 build projects: Customer Support Triage Agent and Professional README."
   }
 ];
 
